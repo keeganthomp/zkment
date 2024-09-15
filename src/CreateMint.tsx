@@ -1,0 +1,111 @@
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { PublicKey } from "@solana/web3.js";
+import { Loader } from "@/components/ui/loader";
+import { useToast } from "@/hooks/use-toast";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useZKCompression } from "@/context/zkCompressionContext";
+
+type Props = {
+  onSubmit?: () => void;
+};
+
+const CreateMint = ({ onSubmit }: Props) => {
+  const { publicKey: connectedWallet } = useWallet();
+  const { createMint } = useZKCompression();
+  const { toast } = useToast();
+  const [authority, setAuthority] = useState(connectedWallet?.toBase58() || "");
+  const [decimals, setDecimals] = useState<string | number>(9);
+  const [isCreating, setIsCreating] = useState(false);
+
+  const canSend = !!authority && decimals !== "";
+
+  const handleCreateMint = async () => {
+    if (!canSend) return;
+    try {
+      setIsCreating(true);
+      await createMint({
+        authority: new PublicKey(authority),
+        decimals: Number(decimals || 0),
+      });
+      toast({
+        title: "Mint created",
+        description: "Mint created successfully",
+      });
+      onSubmit?.();
+    } catch (error: any) {
+      const isInsufficientBalance = error?.message
+        ?.toLowerCase()
+        .includes("not enough balance");
+      if (isInsufficientBalance) {
+        console.log("Insufficient balance");
+        toast({
+          title: "Insufficient balance",
+          description: "You do not have enough balance to send tokens",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "An error occurred while sending tokens",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  return (
+    <div className="max-w-md">
+      <h1 className="text-4xl font-semibold text-gray-700 pb-5">
+        Create Mint
+      </h1>
+      <div className="pb-5 flex flex-col gap-2">
+        <div>
+          <Label>Decimals</Label>
+          <Input
+            disabled={isCreating}
+            type="number"
+            placeholder="9"
+            value={decimals}
+            onChange={(e) => {
+              if (Number(e.target.value) > 0) {
+                setDecimals(Number(e.target.value));
+              } else {
+                setDecimals("");
+              }
+            }}
+          />
+        </div>
+        <div>
+          <Label>Authority</Label>
+          <Input
+            disabled={isCreating}
+            type="text"
+            placeholder="0xqwerty..."
+            value={authority}
+            onChange={(e) => setAuthority(e.target.value)}
+          />
+        </div>
+      </div>
+      {isCreating ? (
+        <div className="flex justify-center h-9 items-center">
+          <Loader className="w-5" />
+        </div>
+      ) : (
+        <Button
+          className="w-full"
+          disabled={!canSend}
+          onClick={handleCreateMint}
+        >
+          Create Mint
+        </Button>
+      )}
+    </div>
+  );
+};
+
+export default CreateMint;
