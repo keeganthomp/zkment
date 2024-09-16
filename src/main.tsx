@@ -1,4 +1,6 @@
 import "./index.css";
+import '@solana/wallet-adapter-react-ui/styles.css'
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
