@@ -21,7 +21,7 @@ const WalletInfo = ({
   return (
     <button
       onClick={onPress}
-      className="flex flex-col justify-center items-center gap-0 px-4 bg-gray-50 rounded-md cursor-pointer hover:bg-gray-100 w-full"
+      className="flex flex-col justify-center items-center gap-0 px-4 rounded-md cursor-pointer hover:bg-gray-50 w-full"
     >
       <p className="font-light text-gray-700">
         {formatAddress(connectedWallet)}

@@ -17,7 +17,6 @@ const ReclaimForm = ({ tokenAccount, onSubmit }: Props) => {
   const { toast } = useToast();
 
   const handleReclaim = async () => {
-    console.log("token account", tokenAccount);
     try {
       setIsCompressing(true);
       await compressAndReclaimRent({
@@ -54,15 +53,12 @@ const ReclaimForm = ({ tokenAccount, onSubmit }: Props) => {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="font-light">
-        <p className="text-gray-500 text-sm pb-0 leading-[15px] italic">
-          This will compress all the tokens in the ATA. This will reclaim all
-          the rent currently being help in the ATA. The compressed mint address
-          will remain the same.
-        </p>
-      </div>
+      <p className="text-gray-400 font-light text-xs pb-0 leading-[15px] italic pt-1">
+        This will compress all the tokens in the ATA. After compression, the
+        original ATA will be closed and the rent will be reclaimed.
+      </p>
       <div className="flex gap-2 text-gray-700 text-lg font-light">
-        <p className="">Amount to Compress:</p>
+        <p className="">Tokens to Compress:</p>
         <p>{tokenAccount.amount}</p>
       </div>
       {isCompressing ? (
@@ -70,12 +66,8 @@ const ReclaimForm = ({ tokenAccount, onSubmit }: Props) => {
           <Loader className="w-5" />
         </div>
       ) : (
-        <Button
-          className="w-full"
-          disabled={!tokenAccount.amount}
-          onClick={handleReclaim}
-        >
-          Reclaim
+        <Button className="w-full" onClick={handleReclaim}>
+          Reclaim Rent
         </Button>
       )}
     </div>

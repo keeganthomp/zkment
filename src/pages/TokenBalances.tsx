@@ -10,7 +10,8 @@ import { SendCompressedTokensModal } from "@/components/modals/SendCompressedTok
 import { DecompressTokenModal } from "@/components/modals/DecompressTokenModal";
 import { SendHorizontal, Coins, RefreshCcw } from "lucide-react";
 
-const WalletInfo = () => {
+const TokenBalances
+ = () => {
   const { publicKey: connectedWallet } = useWallet();
   const { fetCompressedTokenBalances, compressedTokens } = useZKCompression();
   const hasFetchedRef = useRef(false);
@@ -34,6 +35,8 @@ const WalletInfo = () => {
       hasFetchedRef.current = true;
     }
   }, [connectedWallet, fetCompressedTokenBalances]);
+
+  console.log("compressedTokens", compressedTokens);
 
   if (!connectedWallet) {
     return (
@@ -156,4 +159,4 @@ const WalletInfo = () => {
   );
 };
 
-export default WalletInfo;
+export default TokenBalances;

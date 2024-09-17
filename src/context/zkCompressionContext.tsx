@@ -353,18 +353,21 @@ export function ZKCompressionProvider({
 
     const instructions = [];
 
-    console.log("creating compress token instructions...");
-    const { instructions: compressTokensIx, ata } = await createCompressTokenIx(
-      {
-        receiver: connectedWallet,
-        mint,
-        amount,
-      },
-    );
-    instructions.push(...compressTokensIx);
+    let ata: PublicKey | null = null;
+    if (amount > 0) {
+      console.log("creating compress token instructions...");
+      const { instructions: compressTokensIx, ata: ownerAta } =
+        await createCompressTokenIx({
+          receiver: connectedWallet,
+          mint,
+          amount,
+        });
+      ata = ownerAta;
+      instructions.push(...compressTokensIx);
+    }
 
     const closeAccountIx = await createCloseAccountIx({
-      ata: ata.toBase58(),
+      ata: ata?.toBase58() as string,
       owner: connectedWallet.toBase58(),
     });
     instructions.push(closeAccountIx);

@@ -24,7 +24,7 @@ const Sidebar = () => {
         <Link to="/" label="Wallet" />
         <Link to="/create-mint" label="Create Mint" />
         <Link to="/reclaim" label="Reclaim" />
-        <Link to="/transactions" label="Transactions" />
+        <Link to="/tx" label="Transactions" />
       </nav>
     </div>
   );

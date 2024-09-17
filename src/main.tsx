@@ -1,5 +1,5 @@
 import "./index.css";
-import '@solana/wallet-adapter-react-ui/styles.css'
+import "@solana/wallet-adapter-react-ui/styles.css";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -10,10 +10,10 @@ import { ZKCompressionProvider } from "./context/zkCompressionContext";
 import { TokenBalancesProvider } from "./context/tokenBalancesContext";
 import Sidebar from "./components/layout/Sidebar";
 
-import Home from "./Home";
-import CreateMint from "./CreateMint";
-import Transactions from "./Transactions";
-import Reclaim from "./Reclaim";
+import TokenBalances from "./pages/TokenBalances";
+import CreateMint from "./pages/CreateMint";
+import Transactions from "./pages/Transactions";
+import Reclaim from "./pages/Reclaim";
 
 const AppLayout = () => (
   <div className="flex h-screen overflow-hidden">
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <TokenBalances />,
       },
       {
         path: "/reclaim",
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
         element: <CreateMint />,
       },
       {
-        path: "/transactions",
+        path: "/tx",
         element: <Transactions />,
       },
     ],

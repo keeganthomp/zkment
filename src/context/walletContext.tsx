@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -12,9 +12,6 @@ export default function AppWalletProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [solBalance, setSolBalance] = useState(0);
-  const [splTokenBalances, setSplTokenBalances] = useState(0);
-
   const network = WalletAdapterNetwork.Testnet;
   const endpoint = useMemo(() => HELIUS_TESTNET_RPC, [HELIUS_TESTNET_RPC]);
   const wallets = useMemo(

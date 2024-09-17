@@ -1,4 +1,4 @@
-import { getTransactions, openExplorerUrl } from "./utils/solana";
+import { getTransactions, openExplorerUrl } from "../utils/solana";
 import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Loader } from "@/components/ui/loader";
@@ -33,7 +33,7 @@ const Transactions = () => {
 
   return (
     <div>
-      <h1 className="text-4xl font-semibold text-gray-700 pb-5">SPL Wallet</h1>
+      <h1 className="text-4xl font-semibold text-gray-700 pb-5">Transactions</h1>
       <div>
         <div className="grid grid-cols-[120px_1fr] gap-4 h-8 px-2 text-gray-700 underline">
           <h3>Date</h3>
@@ -46,10 +46,10 @@ const Transactions = () => {
             key={txn?.signature}
           >
             <div className="text-sm flex items-center hover:underline">
-              <p>{moment.unix(txn?.timestamp).fromNow()}</p>
+              <p>{moment.unix(txn?.blockTime).fromNow()}</p>
             </div>
-            <div className="flex items-center justify-end">
-              <p className="text-right">{txn?.signature}</p>
+            <div className="flex items-center justify-start">
+              <p className="text-left">{txn?.signature}</p>
             </div>
           </div>
         ))}

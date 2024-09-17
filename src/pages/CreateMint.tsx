@@ -7,6 +7,7 @@ import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useZKCompression } from "@/context/zkCompressionContext";
+import { MintCreatedModal } from "@/components/modals/MintCreatedSuccess";
 
 type Props = {
   onSubmit?: () => void;
@@ -19,6 +20,7 @@ const CreateMint = ({ onSubmit }: Props) => {
   const [authority, setAuthority] = useState(connectedWallet?.toBase58() || "");
   const [decimals, setDecimals] = useState<string | number>(9);
   const [isCreating, setIsCreating] = useState(false);
+  const [newMintAddress, setNewMintAddress] = useState<string | null>(null);
 
   const canSend = !!authority && decimals !== "";
 
@@ -26,10 +28,11 @@ const CreateMint = ({ onSubmit }: Props) => {
     if (!canSend) return;
     try {
       setIsCreating(true);
-      await createMint({
+      const { mint: newMintAddress } = await createMint({
         authority: new PublicKey(authority),
         decimals: Number(decimals || 0),
       });
+      setNewMintAddress(newMintAddress.toBase58());
       toast({
         title: "Mint created",
         description: "Mint created successfully",
@@ -59,52 +62,62 @@ const CreateMint = ({ onSubmit }: Props) => {
   };
 
   return (
-    <div className="max-w-md">
-      <h1 className="text-4xl font-semibold text-gray-700 pb-5">
-        Create Mint
-      </h1>
-      <div className="pb-5 flex flex-col gap-2">
-        <div>
-          <Label>Decimals</Label>
-          <Input
-            disabled={isCreating}
-            type="number"
-            placeholder="9"
-            value={decimals}
-            onChange={(e) => {
-              if (Number(e.target.value) > 0) {
-                setDecimals(Number(e.target.value));
-              } else {
-                setDecimals("");
-              }
-            }}
-          />
-        </div>
-        <div>
-          <Label>Authority</Label>
-          <Input
-            disabled={isCreating}
-            type="text"
-            placeholder="0xqwerty..."
-            value={authority}
-            onChange={(e) => setAuthority(e.target.value)}
-          />
+    <>
+      <div className="flex justify-center w-full">
+        <div className="max-w-md flex-1">
+          <h1 className="text-4xl font-semibold text-gray-700 pb-5 w-full">
+            Create Mint
+          </h1>
+          <div className="pb-5">
+            <div className="w-full">
+              <Label>Decimals</Label>
+              <Input
+                 className="w-full"
+                disabled={isCreating}
+                type="number"
+                placeholder="9"
+                value={decimals}
+                onChange={(e) => {
+                  if (Number(e.target.value) > 0) {
+                    setDecimals(Number(e.target.value));
+                  } else {
+                    setDecimals("");
+                  }
+                }}
+              />
+            </div>
+            <div>
+              <Label>Authority</Label>
+              <Input
+                disabled={isCreating}
+                type="text"
+                placeholder="0xqwerty..."
+                value={authority}
+                onChange={(e) => setAuthority(e.target.value)}
+              />
+            </div>
+          </div>
+          {isCreating ? (
+            <div className="flex justify-center h-9 items-center">
+              <Loader className="w-5" />
+            </div>
+          ) : (
+            <Button
+              className="w-full"
+              disabled={!canSend}
+              onClick={handleCreateMint}
+            >
+              Create Mint
+            </Button>
+          )}
         </div>
       </div>
-      {isCreating ? (
-        <div className="flex justify-center h-9 items-center">
-          <Loader className="w-5" />
-        </div>
-      ) : (
-        <Button
-          className="w-full"
-          disabled={!canSend}
-          onClick={handleCreateMint}
-        >
-          Create Mint
-        </Button>
-      )}
-    </div>
+      <MintCreatedModal
+        isOpen={!!newMintAddress}
+        onClose={() => setNewMintAddress(null)}
+        mintAddress={newMintAddress || ""}
+      />
+    </>
   );
 };
 

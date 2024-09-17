@@ -118,7 +118,7 @@ export const getSPLTokenBalances = async (
     body: JSON.stringify({
       jsonrpc: "2.0",
       method: "getTokenAccounts",
-      id: "helius-test",
+      id: "token-accounts",
       params: {
         page: 1,
         limit: 100,
@@ -172,12 +172,18 @@ export const getAccountRentBalance = async (
 };
 
 export const getTransactions = async (account: PublicKey): Promise<any[]> => {
-  const url =
-    "https://api-devnet.helius.xyz" +
-    `/v0/addresses/${account.toBase58()}/transactions` +
-    `?api-key=${HELIUS_API_KEY}`;
-
-  const response = await fetch(url);
+  const response = await fetch(HELIUS_TESTNET_RPC, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      method: "getSignaturesForAddress",
+      id: "wallet-sigs",
+      params: [account.toBase58()]
+    }),
+  });
   const transactions = await response.json();
-  return transactions;
+  return transactions?.result || [];
 };
