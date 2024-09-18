@@ -30,7 +30,7 @@ const Transactions = () => {
       </h1>
       <div>
         <div className="grid grid-cols-[120px_1fr] gap-4 h-8 px-2 text-gray-700 underline">
-          <h3>Date</h3>
+          <h3>Time</h3>
           <h3>Signature</h3>
         </div>
         {transactions.map((txn) => (
