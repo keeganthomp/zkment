@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { formatAddress, formatAmount } from "@/utils/solana";
+import { formatAmount } from "@/utils/solana";
 import { Loader } from "@/components/ui/loader";
 import { getAddressExplorerUrl } from "@/utils/solana";
 import { CompressedTokenInfo } from "@/context/zkCompressionContext";
