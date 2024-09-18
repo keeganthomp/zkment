@@ -1,13 +1,14 @@
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { formatAddress } from "@/utils/solana";
-import { useTokenBalances } from "@/context/tokenBalancesContext";
-import { useEffect, useRef, useState } from "react";
+import { useSolBalance } from "@/hooks/useSolBalance";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverAnchor,
 } from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
 
 const WalletInfo = ({
   connectedWallet,
@@ -33,13 +34,24 @@ const WalletInfo = ({
   );
 };
 
-const WalletPopoverMenu = () => {
+const WalletPopoverMenu = ({ closePopover }: { closePopover: () => void }) => {
+  const { toast } = useToast();
   const { disconnect, publicKey: connectedWallet } = useWallet();
 
   const handleCopyAddress = () => {
     if (connectedWallet) {
       navigator.clipboard.writeText(connectedWallet.toBase58());
+      toast({
+        title: "Copied to clipboard",
+        description: "Wallet address has been copied to your clipboard",
+      });
+      closePopover();
     }
+  };
+
+  const handleDisconnect = () => {
+    disconnect();
+    closePopover();
   };
 
   return (
@@ -51,7 +63,7 @@ const WalletPopoverMenu = () => {
         Copy Address
       </button>
       <button
-        onClick={disconnect}
+        onClick={handleDisconnect}
         className="h-9 px-3 w-full text-left text-xs font-semibold cursor-pointer hover:bg-gray-50"
       >
         Disconnect
@@ -64,20 +76,7 @@ const ConnectWalletButton = () => {
   const { setVisible } = useWalletModal();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { publicKey: connectedWallet } = useWallet();
-  const { solBalance, fetchSolBalance } = useTokenBalances();
-  const hasCalledFetchBalance = useRef(false);
-
-  useEffect(() => {
-    if (connectedWallet && !hasCalledFetchBalance.current) {
-      fetchSolBalance();
-      hasCalledFetchBalance.current = true;
-    }
-
-    // Reset the ref when wallet is disconnected
-    if (!connectedWallet) {
-      hasCalledFetchBalance.current = false;
-    }
-  }, [connectedWallet, fetchSolBalance]);
+  const { solBalance } = useSolBalance();
 
   if (connectedWallet) {
     return (
@@ -93,7 +92,7 @@ const ConnectWalletButton = () => {
           />
         </PopoverAnchor>
         <PopoverContent className="w-36 p-0">
-          <WalletPopoverMenu />
+          <WalletPopoverMenu closePopover={() => setIsPopoverOpen(false)} />
         </PopoverContent>
       </Popover>
     );

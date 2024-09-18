@@ -7,10 +7,10 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
 import WalletProvider from "./context/walletContext";
 import { ZKCompressionProvider } from "./context/zkCompressionContext";
-import { TokenBalancesProvider } from "./context/tokenBalancesContext";
+import { TokenContextProvider } from "./context/tokensContexts";
 import Sidebar from "./components/layout/Sidebar";
 
-import TokenBalances from "./pages/TokenBalances";
+import TokenBalances from "./pages/CompressedTokens";
 import CreateMint from "./pages/CreateMint";
 import Transactions from "./pages/Transactions";
 import Reclaim from "./pages/Reclaim";
@@ -53,9 +53,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <WalletProvider>
       <ZKCompressionProvider>
-        <TokenBalancesProvider>
+        <TokenContextProvider>
           <RouterProvider router={router} />
-        </TokenBalancesProvider>
+        </TokenContextProvider>
       </ZKCompressionProvider>
     </WalletProvider>
     <Toaster />

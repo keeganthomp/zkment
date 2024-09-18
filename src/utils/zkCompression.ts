@@ -1,7 +1,4 @@
-import {
-  CompressedAccountData,
-  createRpc as createLightRpc,
-} from "@lightprotocol/stateless.js";
+import { createRpc as createLightRpc } from "@lightprotocol/stateless.js";
 import {
   ComputeBudgetProgram,
   TransactionInstruction,
@@ -152,7 +149,7 @@ export const getCompressedMintInfo = async ({
     },
     body: JSON.stringify({
       jsonrpc: "2.0",
-      id: "test-account",
+      id: "get-compressed-account",
       method: "getCompressedAccount",
       params: {
         address: mint?.toBase58(),
@@ -186,6 +183,38 @@ export const getCompressedMintInfo = async ({
       freezeAuthority: mintInfo?.freezeAuthority,
     },
   };
-  console.log("formattedCompressedAccountInfo", formattedCompressedAccountInfo);
   return formattedCompressedAccountInfo;
+};
+
+export const fetCompressedTokenBalances = async (wallet: PublicKey) => {
+  const response = await fetch(HELIUS_TESTNET_RPC, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: "compressed-token-balances",
+      method: "getCompressedTokenBalancesByOwner",
+      params: {
+        owner: wallet.toBase58(),
+      },
+    }),
+  });
+  if (response.status === 429) {
+    throw new Error("Too many requests. Try again in a few seconds.");
+  }
+  if (!response.ok) {
+    throw new Error("Failed to fetch compressed token balances");
+  }
+  const data = await response.json();
+  const compressedTokenBalances = data?.result?.value?.token_balances;
+  const compressedTokens = compressedTokenBalances?.map((token: any) => ({
+    mint: token.mint,
+    balance: token.balance,
+    compressed: true,
+  }));
+  // sort by balance
+  compressedTokens?.sort((a: any, b: any) => b.balance - a.balance);
+  return compressedTokens;
 };

@@ -33,10 +33,6 @@ const CreateMint = ({ onSubmit }: Props) => {
         decimals: Number(decimals || 0),
       });
       setNewMintAddress(newMintAddress.toBase58());
-      toast({
-        title: "Mint created",
-        description: "Mint created successfully",
-      });
       onSubmit?.();
     } catch (error: any) {
       const isInsufficientBalance = error?.message

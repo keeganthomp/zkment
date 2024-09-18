@@ -1,6 +1,4 @@
-"use client";
-
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getLightRpc, getTxnForSigning } from "@/utils/zkCompression";
 import { CompressedTokenProgram } from "@lightprotocol/compressed-token";
@@ -13,7 +11,6 @@ import {
 } from "@/utils/zkInstructions";
 import { TokenMetadata } from "@solana/spl-token-metadata";
 import { Rpc } from "@lightprotocol/stateless.js";
-import { HELIUS_TESTNET_RPC } from "@/lib/helius";
 import { createCloseAccountIx } from "@/utils/solana";
 import { getAssociatedTokenAddress } from "@/utils/solana";
 
@@ -65,13 +62,11 @@ interface ZKCompressionContext {
   transferTokens: (args: TransferTokensArgs) => Promise<BaseTxnResult>;
   compressToken: (args: CompressTokenArgs) => Promise<BaseTxnResult>;
   descompressToken: (args: DecompressTokenArgs) => Promise<BaseTxnResult>;
-  fetCompressedTokenBalances: () => Promise<CompressedTokenInfo[]>;
   reclaimRent: (args: {
     mint: PublicKey;
     owner: PublicKey;
   }) => Promise<BaseTxnResult>;
   compressAndReclaimRent: (args: CompressTokenArgs) => Promise<BaseTxnResult>;
-  compressedTokens: CompressedTokenInfo[];
 }
 
 const ZKCompressionContext = createContext<ZKCompressionContext | undefined>(
@@ -83,9 +78,6 @@ export function ZKCompressionProvider({
 }: {
   children: React.ReactNode | React.ReactNode[];
 }) {
-  const [compressedTokens, setCompressedTokens] = useState<
-    CompressedTokenInfo[]
-  >([]);
   const { publicKey: connectedWallet, sendTransaction } = useWallet();
 
   const createMint = async (
@@ -353,7 +345,7 @@ export function ZKCompressionProvider({
 
     const instructions = [];
 
-    let ata: PublicKey | null = null;
+    let ata: PublicKey | undefined;
     if (amount > 0) {
       console.log("creating compress token instructions...");
       const { instructions: compressTokensIx, ata: ownerAta } =
@@ -364,6 +356,11 @@ export function ZKCompressionProvider({
         });
       ata = ownerAta;
       instructions.push(...compressTokensIx);
+    } else {
+      ata = getAssociatedTokenAddress({
+        owner: connectedWallet,
+        mint,
+      });
     }
 
     const closeAccountIx = await createCloseAccountIx({
@@ -443,37 +440,6 @@ export function ZKCompressionProvider({
     };
   };
 
-  const fetCompressedTokenBalances = async () => {
-    if (!connectedWallet) {
-      throw new Error("No connected wallet");
-    }
-    const response = await fetch(HELIUS_TESTNET_RPC, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: "test-account",
-        method: "getCompressedTokenBalancesByOwner",
-        params: {
-          owner: connectedWallet.toBase58(),
-        },
-      }),
-    });
-    const data = await response.json();
-    const compressedTokenBalances = data?.result?.value?.token_balances;
-    const compressedTokens = compressedTokenBalances?.map((token: any) => ({
-      mint: token.mint,
-      balance: token.balance,
-      compressed: true,
-    }));
-    // sort by balance
-    compressedTokens?.sort((a: any, b: any) => b.balance - a.balance);
-    setCompressedTokens(compressedTokens);
-    return compressedTokens;
-  };
-
   return (
     <ZKCompressionContext.Provider
       value={{
@@ -483,10 +449,8 @@ export function ZKCompressionProvider({
         transferTokens,
         compressToken,
         descompressToken,
-        fetCompressedTokenBalances,
         reclaimRent,
         compressAndReclaimRent,
-        compressedTokens,
       }}
     >
       {children}

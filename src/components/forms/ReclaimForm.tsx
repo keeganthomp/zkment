@@ -40,6 +40,7 @@ const ReclaimForm = ({ tokenAccount, onSubmit }: Props) => {
           variant: "destructive",
         });
       } else {
+        console.log("Error", error);
         toast({
           title: "Error",
           description: "An error occurred while compressing tokens",

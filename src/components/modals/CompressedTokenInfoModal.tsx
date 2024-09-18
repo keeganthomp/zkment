@@ -7,17 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PublicKey } from "@solana/web3.js";
-import { useEffect, useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { formatAddress, formatAmount } from "@/utils/solana";
 import { Loader } from "@/components/ui/loader";
 import { getAddressExplorerUrl } from "@/utils/solana";
 import { CompressedTokenInfo } from "@/context/zkCompressionContext";
-import {
-  getCompressedMintInfo,
-  CompressedTokenDetails,
-} from "@/utils/zkCompression";
+import { useMintInfo } from "@/hooks/useMintInfo";
 
 type Props = {
   open: boolean;
@@ -26,41 +20,24 @@ type Props = {
 };
 
 const CompressedMintInfoModal = ({ open, onClose, token }: Props) => {
-  const { publicKey: connectedWallet } = useWallet();
-  const [isFetching, setIsFetching] = useState(false);
-  const [mintInfo, setMintInfo] = useState<CompressedTokenDetails | null>(null);
+  const { isFetchingMintInfo, errorFetchingMintInfo, mintInfo, isAuthority } =
+    useMintInfo(token?.mint);
 
-  useEffect(() => {
-    const fetchCompressedMintInfo = async () => {
-      if (token?.mint && connectedWallet) {
-        console.log("getting mint info..");
-        setIsFetching(true);
-        try {
-          const compressedMintInfo = await getCompressedMintInfo({
-            mint: new PublicKey(token.mint),
-          });
-          setMintInfo(compressedMintInfo);
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsFetching(false);
-        }
-      }
-    };
-
-    fetchCompressedMintInfo();
-  }, [token?.mint, connectedWallet]);
-
-  const isOwner =
-    mintInfo?.token?.mintAuthority?.toBase58() === connectedWallet?.toBase58();
+  console.log(mintInfo);
 
   return (
     <Dialog modal open={open} onOpenChange={onClose}>
       <DialogContent>
-        {isFetching ? (
+        {isFetchingMintInfo ? (
           <div className="flex flex-col gap-1 items-center justify-center h-full">
             <Loader className="w-6 h-6 text-gray-600" />
             <p className="text-gray-500 text-xs">Fetching Mint Info...</p>
+          </div>
+        ) : errorFetchingMintInfo ? (
+          <div className="flex flex-col gap-1 items-center justify-center h-full">
+            <p className="text-gray-500 text-xs">
+              Error fetching mint info: {errorFetchingMintInfo}
+            </p>
           </div>
         ) : (
           <>
@@ -69,27 +46,25 @@ const CompressedMintInfoModal = ({ open, onClose, token }: Props) => {
               <DialogDescription>
                 <a
                   className="hover:underline"
-                  href={getAddressExplorerUrl(mintInfo?.token?.mint.toBase58())}
+                  href={getAddressExplorerUrl(mintInfo?.address?.toBase58())}
                   target="_blank"
                 >
-                  {mintInfo?.token?.mint.toBase58()}
+                  {mintInfo?.address?.toBase58()}
                 </a>
               </DialogDescription>
             </DialogHeader>
-            <div>
+            <div className="pt-3">
               <div className="text-sm text-gray-500 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <p className="text-gray-900">Authority:</p>
+                  <p className="text-gray-700">Authority:</p>
                   <p>
-                    {isOwner
+                    {isAuthority
                       ? "You"
-                      : formatAddress(
-                          mintInfo?.token?.mintAuthority?.toBase58() || ""
-                        )}
+                      : mintInfo?.mintAuthority?.toBase58() || ""}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <p className="text-gray-900">Balance:</p>
+                  <p className="text-gray-700">Balance:</p>
                   <p>
                     {formatAmount(token?.balance, mintInfo?.token?.decimals)}
                   </p>

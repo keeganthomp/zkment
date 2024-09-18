@@ -3,12 +3,12 @@ import {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAccount,
+  getMint,
   createCloseAccountInstruction,
 } from "@solana/spl-token";
 import { getLightRpc } from "@/utils/zkCompression";
 import {
   HELIUS_TESTNET_RPC,
-  HELIUS_API_KEY,
 } from "@/lib/helius";
 
 export const formatAddress = (address = "") => {
@@ -107,8 +107,8 @@ export const checkIfAccountExist = async (account: PublicKey) => {
   return accountExist;
 };
 
-export const getSPLTokenBalances = async (
-  walletAddress: string,
+export const fetchSplTokenAccounts = async (
+  walletAddress: PublicKey,
 ): Promise<TokenAccount[]> => {
   const response = await fetch(HELIUS_TESTNET_RPC, {
     method: "POST",
@@ -125,7 +125,7 @@ export const getSPLTokenBalances = async (
         displayOptions: {
           showZeroBalance: true,
         },
-        owner: walletAddress,
+        owner: walletAddress.toBase58(),
       },
     }),
   });
@@ -135,9 +135,9 @@ export const getSPLTokenBalances = async (
 
 export const getSolBalance = async (
   connection: Connection,
-  walletAddress: string,
+  walletAddress: PublicKey,
 ) => {
-  const solBalance = await connection.getBalance(new PublicKey(walletAddress));
+  const solBalance = await connection.getBalance(walletAddress);
   return solBalance / LAMPORTS_PER_SOL;
 };
 
@@ -187,3 +187,8 @@ export const getTransactions = async (account: PublicKey): Promise<any[]> => {
   const transactions = await response.json();
   return transactions?.result || [];
 };
+
+export const getMintInfo = async (connection: Connection, account: string) => {
+  const mint = await getMint(connection, new PublicKey(account))
+  return mint;
+}
