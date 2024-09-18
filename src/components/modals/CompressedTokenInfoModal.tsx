@@ -23,8 +23,6 @@ const CompressedMintInfoModal = ({ open, onClose, token }: Props) => {
   const { isFetchingMintInfo, errorFetchingMintInfo, mintInfo, isAuthority } =
     useMintInfo(token?.mint);
 
-  console.log(mintInfo);
-
   return (
     <Dialog modal open={open} onOpenChange={onClose}>
       <DialogContent>
