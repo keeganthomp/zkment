@@ -5,7 +5,7 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { HELIUS_TESTNET_RPC } from "@/lib/helius";
+import { getRpcUrl } from "@/utils/environment";
 
 export default function AppWalletProvider({
   children,
@@ -13,12 +13,12 @@ export default function AppWalletProvider({
   children: React.ReactNode;
 }) {
   const network = WalletAdapterNetwork.Testnet;
-  const endpoint = useMemo(() => HELIUS_TESTNET_RPC, [HELIUS_TESTNET_RPC]);
+  const endpoint = useMemo(() => getRpcUrl(), [getRpcUrl]);
   const wallets = useMemo(
     () => [
       // manually add any legacy wallet adapters here
     ],
-    [network],
+    [network]
   );
 
   return (

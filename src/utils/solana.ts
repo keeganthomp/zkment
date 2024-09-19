@@ -7,9 +7,7 @@ import {
   createCloseAccountInstruction,
 } from "@solana/spl-token";
 import { getLightRpc } from "@/utils/zkCompression";
-import {
-  HELIUS_TESTNET_RPC,
-} from "@/lib/helius";
+import { getRpcUrl } from "@/utils/environment";
 
 export const formatAddress = (address = "") => {
   return `${address.slice(0, 4)}...${address.slice(-4)}`;
@@ -30,7 +28,7 @@ export const getSignatureExplorerUrl = (signature = "") => {
 export const openExplorerUrl = (address = "", isTxn = false) => {
   window.open(
     isTxn ? getSignatureExplorerUrl(address) : getAddressExplorerUrl(address),
-    "_blank",
+    "_blank"
   );
 };
 
@@ -53,7 +51,7 @@ export const getAssociatedTokenAddress = ({
   // Check if the ATA already exists
   const existingATA = PublicKey.findProgramAddressSync(
     [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
-    ASSOCIATED_TOKEN_PROGRAM_ID,
+    ASSOCIATED_TOKEN_PROGRAM_ID
   )[0];
   if (existingATA) {
     return existingATA;
@@ -83,7 +81,7 @@ export const checkIfAtaExist = async ({
       // we assume the ata is not valid if we get an error
       // create the ata here
       console.log(
-        `No ATA found for ${mint.toBase58()} owned by ${owner.toBase58()}`,
+        `No ATA found for ${mint.toBase58()} owned by ${owner.toBase58()}`
       );
     }
   }
@@ -108,9 +106,9 @@ export const checkIfAccountExist = async (account: PublicKey) => {
 };
 
 export const fetchSplTokenAccounts = async (
-  walletAddress: PublicKey,
+  walletAddress: PublicKey
 ): Promise<TokenAccount[]> => {
-  const response = await fetch(HELIUS_TESTNET_RPC, {
+  const response = await fetch(getRpcUrl(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -135,7 +133,7 @@ export const fetchSplTokenAccounts = async (
 
 export const getSolBalance = async (
   connection: Connection,
-  walletAddress: PublicKey,
+  walletAddress: PublicKey
 ) => {
   const solBalance = await connection.getBalance(walletAddress);
   return solBalance / LAMPORTS_PER_SOL;
@@ -151,13 +149,13 @@ export const createCloseAccountIx = async ({
   return createCloseAccountInstruction(
     new PublicKey(ata),
     new PublicKey(owner),
-    new PublicKey(owner),
+    new PublicKey(owner)
   );
 };
 
 export const getAccountRentBalance = async (
   connection: Connection,
-  account: PublicKey,
+  account: PublicKey
 ) => {
   try {
     const fetchedAccount = await getAccount(connection, account);
@@ -172,7 +170,7 @@ export const getAccountRentBalance = async (
 };
 
 export const getTransactions = async (account: PublicKey): Promise<any[]> => {
-  const response = await fetch(HELIUS_TESTNET_RPC, {
+  const response = await fetch(getRpcUrl(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -181,7 +179,7 @@ export const getTransactions = async (account: PublicKey): Promise<any[]> => {
       jsonrpc: "2.0",
       method: "getSignaturesForAddress",
       id: "wallet-sigs",
-      params: [account.toBase58()]
+      params: [account.toBase58()],
     }),
   });
   const transactions = await response.json();
@@ -189,6 +187,6 @@ export const getTransactions = async (account: PublicKey): Promise<any[]> => {
 };
 
 export const getMintInfo = async (connection: Connection, account: string) => {
-  const mint = await getMint(connection, new PublicKey(account))
+  const mint = await getMint(connection, new PublicKey(account));
   return mint;
-}
+};

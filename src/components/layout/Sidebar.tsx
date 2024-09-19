@@ -1,5 +1,18 @@
 import { NavLink } from "react-router-dom";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
+import {
+  getEnvironment,
+  setEnvironment,
+  Environment,
+} from "@/utils/environment";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Link = ({ to, label }: { to: string; label: string }) => {
   return (
@@ -16,9 +29,30 @@ const Link = ({ to, label }: { to: string; label: string }) => {
   );
 };
 
+const NetworkSelect = () => {
+  const environment = getEnvironment();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="w-full absolute bottom-4 left-0">
+        {environment}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Network</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setEnvironment(Environment.DEVNET)}>
+          Devnet
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setEnvironment(Environment.MAINNET)}>
+          Mainnet
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 const Sidebar = () => {
   return (
-    <div className="w-46 flex-shrink-0 shadow-md bg-white min-w-[175px] flex flex-col gap-10 py-5">
+    <div className="w-46 flex-shrink-0 shadow-md bg-white min-w-[175px] flex flex-col gap-10 py-5 relative">
       <ConnectWalletButton />
       <nav className="flex flex-col gap-1 px-2">
         <Link to="/" label="Wallet" />
@@ -26,6 +60,7 @@ const Sidebar = () => {
         <Link to="/create-mint" label="Create Mint" />
         <Link to="/tx" label="Transactions" />
       </nav>
+      <NetworkSelect />
     </div>
   );
 };

@@ -18,16 +18,16 @@ import {
 import { pack, TokenMetadata } from "@solana/spl-token-metadata";
 import { Program, AnchorProvider } from "@coral-xyz/anchor";
 import { IDL } from "@lightprotocol/compressed-token";
-import { HELIUS_TESTNET_RPC } from "@/lib/helius";
+import { getRpcUrl } from "@/utils/environment";
 import { getMint } from "@solana/spl-token";
 
-export const ZK_NETWORK_RPC_TESTNET = HELIUS_TESTNET_RPC;
-export const PHOTON_RPC_ENDPOINT_TESTNET = HELIUS_TESTNET_RPC;
+export const ZK_NETWORK_RPC_TESTNET = getRpcUrl();
+export const PHOTON_RPC_ENDPOINT_TESTNET = getRpcUrl();
 
 export const DEFAULT_PRIORITY_FEE = 1_000_000;
 
 export const COMPRESSED_TOKEN_PROGRAM_ID = new PublicKey(
-  "cTokenmWW8bLPjZEBAUgYy3zKxQZW6VKi7bqNFEVv3m",
+  "cTokenmWW8bLPjZEBAUgYy3zKxQZW6VKi7bqNFEVv3m"
 );
 export const CPI_AUTHORITY_SEED = Buffer.from("cpi_authority");
 export const POOL_SEED = Buffer.from("pool");
@@ -66,7 +66,7 @@ export const getTxnForSigning = (
   signer: PublicKey,
   blockhash: string,
   additionalSigners?: Signer[],
-  lookupTableAccounts?: AddressLookupTableAccount[],
+  lookupTableAccounts?: AddressLookupTableAccount[]
 ): VersionedTransaction => {
   const computeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
     units: DEFAULT_PRIORITY_FEE,
@@ -112,7 +112,7 @@ export const deriveTokenPoolPda = (mint: PublicKey): PublicKey => {
   const seeds = [POOL_SEED, mint.toBuffer()];
   const [address, _] = PublicKey.findProgramAddressSync(
     seeds,
-    COMPRESSED_TOKEN_PROGRAM_ID,
+    COMPRESSED_TOKEN_PROGRAM_ID
   );
   return address;
 };
@@ -120,7 +120,7 @@ export const deriveTokenPoolPda = (mint: PublicKey): PublicKey => {
 export const deriveCpiAuthorityPda = (): PublicKey => {
   const [address, _] = PublicKey.findProgramAddressSync(
     [CPI_AUTHORITY_SEED],
-    COMPRESSED_TOKEN_PROGRAM_ID,
+    COMPRESSED_TOKEN_PROGRAM_ID
   );
   return address;
 };
@@ -142,7 +142,7 @@ export const getCompressedMintInfo = async ({
 }): Promise<CompressedTokenDetails> => {
   const lightRpc = getLightRpc();
   // fetch compressed account from helius
-  const compressedAccountResponse = await fetch(HELIUS_TESTNET_RPC, {
+  const compressedAccountResponse = await fetch(getRpcUrl(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -187,7 +187,7 @@ export const getCompressedMintInfo = async ({
 };
 
 export const fetCompressedTokenBalances = async (wallet: PublicKey) => {
-  const response = await fetch(HELIUS_TESTNET_RPC, {
+  const response = await fetch(getRpcUrl(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
