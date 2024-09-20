@@ -5,8 +5,10 @@ import { ReclaimModal } from "@/components/modals/ReclaimModal";
 import { TokenAccount } from "@/utils/solana";
 import { useSplTokenAccounts } from "@/hooks/useSplTokenAccounts";
 import { RotateCcw } from "lucide-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const Reclaim = () => {
+  const { publicKey: connectedWallet } = useWallet();
   const {
     splTokenAccounts,
     isFetching: isFetchingSplTokenAccounts,
@@ -16,6 +18,16 @@ const Reclaim = () => {
   const [isReclaiming, setIsReclaiming] = useState(false);
   const [selectedTokenAccount, setSelectedTokenAccount] =
     useState<TokenAccount | null>(null);
+
+  if (!connectedWallet) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="text-gray-500 font-thin">
+          Connect your wallet to reclaim rent
+        </p>
+      </div>
+    );
+  }
 
   if (isFetchingSplTokenAccounts) {
     return (

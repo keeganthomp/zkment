@@ -57,6 +57,16 @@ const CreateMint = ({ onSubmit }: Props) => {
     }
   };
 
+  if (!connectedWallet) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="text-gray-500 font-thin">
+          Connect your wallet to create a mint
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex justify-center w-full">

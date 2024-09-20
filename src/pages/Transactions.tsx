@@ -10,6 +10,16 @@ const Transactions = () => {
   const { transactions, isLoading, error, refetch } =
     useTransactions(publicKey);
 
+  if (!publicKey) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="text-gray-500 font-thin">
+          Connect your wallet to view transactions
+        </p>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-1 justify-center items-center">
