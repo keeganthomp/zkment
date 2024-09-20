@@ -31,14 +31,21 @@ const Link = ({ to, label }: { to: string; label: string }) => {
 
 const NetworkSelect = () => {
   const environment = getEnvironment();
+  const isDevelopment = import.meta.env.MODE === "development";
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-full absolute bottom-4 left-0">
-        {environment}
+      <DropdownMenuTrigger className="w-full  bg-gray-50 hover:bg-gray-100 py-2 rounded font-light">
+        {environment.charAt(0).toUpperCase() + environment.slice(1)}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Network</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {isDevelopment && (
+          <DropdownMenuItem onClick={() => setEnvironment(Environment.LOCAL)}>
+            Local
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => setEnvironment(Environment.DEVNET)}>
           Devnet
         </DropdownMenuItem>
@@ -60,7 +67,9 @@ const Sidebar = () => {
         <Link to="/create-mint" label="Create Mint" />
         <Link to="/tx" label="Transactions" />
       </nav>
+      <div className="absolute bottom-4 left-0 w-full px-2">
       <NetworkSelect />
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { openExplorerUrl } from "@/utils/solana";
+// import { openExplorerUrl } from "@/utils/solana";
 import { Copy } from "lucide-react";
 
 export function MintCreatedModal({

@@ -5,7 +5,7 @@ import {
   TransactionMessage,
   VersionedTransaction,
   PublicKey,
-  AddressLookupTableAccount,
+  // AddressLookupTableAccount,
   Signer,
 } from "@solana/web3.js";
 import {
@@ -66,7 +66,7 @@ export const getTxnForSigning = (
   signer: PublicKey,
   blockhash: string,
   additionalSigners?: Signer[],
-  lookupTableAccounts?: AddressLookupTableAccount[]
+  // lookupTableAccounts?: AddressLookupTableAccount[]
 ): VersionedTransaction => {
   const computeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
     units: DEFAULT_PRIORITY_FEE,

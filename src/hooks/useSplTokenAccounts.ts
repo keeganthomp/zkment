@@ -30,7 +30,7 @@ export const useSplTokenAccounts = (): useSplTokenAccounts => {
       setSplTokenAccounts(compressedTokens);
       hasFetchedRef.current = true;
     } catch (err: any) {
-      console.error("Error fetching compressed tokens:", err);
+      console.error("Error spl tokens:", err);
       setError(err?.message || "Unknown error");
     } finally {
       setIsFetching(false);

@@ -29,8 +29,11 @@ export const getEnvironment = (): Environment => {
  */
 export const setEnvironment = (env: Environment): void => {
   if (Object.values(Environment).includes(env)) {
+    const didEnvChange = env !== getEnvironment();
     localStorage.setItem(ENV_STORAGE_KEY, env);
-    window.location.reload();
+    if (didEnvChange) {
+      window.location.reload();
+    }
   } else {
     console.warn(`Attempted to set invalid environment: ${env}`);
   }

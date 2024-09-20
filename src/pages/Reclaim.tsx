@@ -11,6 +11,7 @@ const Reclaim = () => {
     splTokenAccounts,
     isFetching: isFetchingSplTokenAccounts,
     refetch: refetchSplTokenAccounts,
+    error: errorFetchingSplTokenAccounts,
   } = useSplTokenAccounts();
   const [isReclaiming, setIsReclaiming] = useState(false);
   const [selectedTokenAccount, setSelectedTokenAccount] =
@@ -41,35 +42,43 @@ const Reclaim = () => {
           </button>
         </div>
         <div>
-          <div className="grid grid-cols-[1fr_150px_150px] gap-4 h-8 px-2 text-gray-700 underline">
-            <h3>Mint</h3>
-            <h3 className="text-right">Balance</h3>
-            <h3 className="text-center">Action</h3>
-          </div>
-          {splTokenAccounts?.map((token) => (
-            <div
-              className="grid grid-cols-[1fr_150px_150px] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-600 font-light rounded"
-              key={token.mint}
-            >
-              <div className="flex items-center">
-                <p>{token.mint}</p>
+          {errorFetchingSplTokenAccounts ? (
+            <p className="text-red-500 font-light text-sm text-center">
+              {errorFetchingSplTokenAccounts}
+            </p>
+          ) : (
+            <>
+              <div className="grid grid-cols-[1fr_150px_150px] gap-4 h-8 px-2 text-gray-700 underline">
+                <h3>Mint</h3>
+                <h3 className="text-right">Balance</h3>
+                <h3 className="text-center">Action</h3>
               </div>
-              <div className="flex items-center justify-end">
-                <p className="text-right">{token.amount}</p>
-              </div>
-              <div className="flex justify-center items-center">
-                <Button
-                  onClick={() => {
-                    setSelectedTokenAccount(token);
-                    setIsReclaiming(true);
-                  }}
-                  className="bg-gray-700 h-7 font-light px-2"
+              {splTokenAccounts?.map((token) => (
+                <div
+                  className="grid grid-cols-[1fr_150px_150px] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-600 font-light rounded"
+                  key={token.mint}
                 >
-                  Reclaim
-                </Button>
-              </div>
-            </div>
-          ))}
+                  <div className="flex items-center">
+                    <p>{token.mint}</p>
+                  </div>
+                  <div className="flex items-center justify-end">
+                    <p className="text-right">{token.amount}</p>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <Button
+                      onClick={() => {
+                        setSelectedTokenAccount(token);
+                        setIsReclaiming(true);
+                      }}
+                      className="bg-gray-700 h-7 font-light px-2"
+                    >
+                      Reclaim
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
       <ReclaimModal

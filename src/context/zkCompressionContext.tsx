@@ -409,7 +409,7 @@ export function ZKCompressionProvider({
     } = await lightRpc.getLatestBlockhashAndContext();
 
     console.log("creating decompress token instructions...");
-    const { instructions, ata } = await createDecompressTokenIx({
+    const { instructions } = await createDecompressTokenIx({
       owner: connectedWallet,
       mint,
       amount,

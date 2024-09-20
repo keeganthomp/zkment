@@ -127,6 +127,12 @@ export const fetchSplTokenAccounts = async (
       },
     }),
   });
+  if (response.status === 429) {
+    throw new Error("Too many requests. Try again in a few seconds.");
+  }
+  if (!response.ok) {
+    throw new Error("Failed to fetch compressed token balances");
+  }
   const { result } = await response.json();
   return result?.token_accounts || [];
 };
@@ -182,6 +188,12 @@ export const getTransactions = async (account: PublicKey): Promise<any[]> => {
       params: [account.toBase58()],
     }),
   });
+  if (response.status === 429) {
+    throw new Error("Too many requests. Try again in a few seconds.");
+  }
+  if (!response.ok) {
+    throw new Error("Failed to fetch compressed token balances");
+  }
   const transactions = await response.json();
   return transactions?.result || [];
 };
