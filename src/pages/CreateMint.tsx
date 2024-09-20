@@ -61,7 +61,7 @@ const CreateMint = ({ onSubmit }: Props) => {
     <>
       <div className="flex justify-center w-full">
         <div className="max-w-md flex-1">
-          <h1 className="text-4xl font-semibold text-gray-700 pb-5 w-full">
+          <h1 className="text-4xl font-semibold text-gray-700 pb-7 w-full">
             Create Mint
           </h1>
           <div className="pb-5">

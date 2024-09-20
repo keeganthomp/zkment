@@ -10,6 +10,7 @@ import { DecompressTokenModal } from "@/components/modals/DecompressTokenModal";
 import { SendHorizontal, Coins, RefreshCcw } from "lucide-react";
 import { useCompressedTokenBalance } from "@/hooks/useCompressedTokenBalance";
 import { RotateCcw } from "lucide-react";
+import { formatAddress } from "@/utils/solana";
 
 const CompressedTokens = () => {
   const { publicKey: connectedWallet } = useWallet();
@@ -49,7 +50,7 @@ const CompressedTokens = () => {
     <>
       <div>
         <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-semibold text-gray-700 pb-5">
+          <h1 className="text-4xl font-semibold text-gray-700 pb-7">
             Compressed Wallet
           </h1>
           <button
@@ -72,7 +73,7 @@ const CompressedTokens = () => {
             </div>
             {compressedTokens?.map((token) => (
               <div
-                className="grid grid-cols-[1fr_150px_300px] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-600 font-light rounded"
+                className="grid grid-cols-[1fr_150px_300px] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-500 font-light rounded"
                 key={token.mint}
               >
                 <div

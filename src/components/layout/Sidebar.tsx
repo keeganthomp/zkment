@@ -59,16 +59,24 @@ const NetworkSelect = () => {
 
 const Sidebar = () => {
   return (
-    <div className="w-46 flex-shrink-0 shadow-md bg-white min-w-[175px] flex flex-col gap-10 py-5 relative">
+    <div className="w-46 flex-shrink-0 shadow-md bg-white min-w-[175px] flex flex-col gap-6 pb-5 py-5 relative">
+      <div className="flex flex-col gap-0 justify-center items-center relative">
+        <h1 className="text-2xl tracking-[1px] uppercase font-bold">
+          ZKMent
+        </h1>
+        <p className="text-[9px] uppercase font-thin tracking-[2px] relative top-[-4px]">
+          Compression First
+        </p>
+      </div>
       <ConnectWalletButton />
       <nav className="flex flex-col gap-1 px-2">
-        <Link to="/" label="Wallet" />
+        <Link to="/" label="Balances" />
         <Link to="/reclaim" label="Reclaim" />
         <Link to="/create-mint" label="Create Mint" />
         <Link to="/tx" label="Transactions" />
       </nav>
       <div className="absolute bottom-4 left-0 w-full px-2">
-      <NetworkSelect />
+        <NetworkSelect />
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import {
   PopoverAnchor,
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+import { WalletMinimal } from "lucide-react";
 
 const WalletInfo = ({
   connectedWallet,
@@ -22,11 +23,14 @@ const WalletInfo = ({
   return (
     <button
       onClick={onPress}
-      className="flex flex-col justify-center items-center gap-0 px-4 rounded-md cursor-pointer hover:bg-gray-50 w-full"
+      className="flex flex-col gap-0 px-4 rounded-md cursor-pointer hover:bg-gray-50 w-full"
     >
-      <p className="font-light text-gray-700">
-        {formatAddress(connectedWallet)}
-      </p>
+      <div className="flex items-center gap-1">
+        <WalletMinimal strokeWidth={1.25} size={16} />
+        <p className="font-light text-gray-700">
+          {formatAddress(connectedWallet)}
+        </p>
+      </div>
       <p className="text-sm font-thin text-gray-500 relative top-[-5px]">
         {balance} SOL
       </p>

@@ -28,7 +28,7 @@ const Transactions = () => {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-semibold text-gray-700 pb-5">
+        <h1 className="text-4xl font-semibold text-gray-700 pb-7">
           Transactions
         </h1>
         <button
@@ -51,7 +51,7 @@ const Transactions = () => {
             {transactions.map((txn) => (
               <div
                 onClick={() => openExplorerUrl(txn.signature, true)}
-                className="grid grid-cols-[120px_1fr] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-600 font-light rounded"
+                className="grid grid-cols-[120px_1fr] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-500 font-light rounded"
                 key={txn.signature}
               >
                 <div className="text-sm flex items-center hover:underline">

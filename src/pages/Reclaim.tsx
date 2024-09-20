@@ -30,7 +30,7 @@ const Reclaim = () => {
     <>
       <div>
         <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-semibold text-gray-700 pb-5">
+          <h1 className="text-4xl font-semibold text-gray-700 pb-7">
             Reclaim Rent
           </h1>
           <button
@@ -55,7 +55,7 @@ const Reclaim = () => {
               </div>
               {splTokenAccounts?.map((token) => (
                 <div
-                  className="grid grid-cols-[1fr_150px_150px] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-600 font-light rounded"
+                  className="grid grid-cols-[1fr_150px_150px] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-500 font-light rounded"
                   key={token.mint}
                 >
                   <div className="flex items-center">

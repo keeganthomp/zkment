@@ -18,7 +18,7 @@ import Reclaim from "./pages/Reclaim";
 const AppLayout = () => (
   <div className="flex h-screen overflow-hidden">
     <Sidebar />
-    <main className="flex-grow overflow-auto px-7 py-4 bg-gray-50">
+    <main className="flex-grow overflow-auto px-9 py-4 bg-gray-50">
       <Outlet />
     </main>
   </div>
