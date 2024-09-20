@@ -41,11 +41,26 @@ export const setEnvironment = (env: Environment): void => {
 
 export const getRpcUrl = () => {
   switch (getEnvironment()) {
-    case Environment.LOCAL:
-      return "http://localhost:8989/";
-    case Environment.DEVNET:
-      return "https://devnet-rpc-proxy.whereiskeegan.workers.dev/";
-    case Environment.MAINNET:
-      return "https://mainnet-rpc-proxy.whereiskeegan.workers.dev/";
+    case Environment.LOCAL: {
+      const rpcUrl = import.meta.env.VITE_LOCAL_RPC || "http://localhost:8899/";
+      if (!rpcUrl) {
+        throw new Error("LOCAL_RPC is not set");
+      }
+      return rpcUrl;
+    }
+    case Environment.DEVNET: {
+      const rpcUrl = import.meta.env.VITE_DEVNET_RPC;
+      if (!rpcUrl) {
+        throw new Error("DEVNET_RPC is not set");
+      }
+      return rpcUrl;
+    }
+    case Environment.MAINNET: {
+      const rpcUrl = import.meta.env.VITE_MAINNET_RPC;
+      if (!rpcUrl) {
+        throw new Error("MAINNET_RPC is not set");
+      }
+      return rpcUrl;
+    }
   }
 };
