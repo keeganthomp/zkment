@@ -10,7 +10,6 @@ import { DecompressTokenModal } from "@/components/modals/DecompressTokenModal";
 import { SendHorizontal, Coins, RefreshCcw } from "lucide-react";
 import { useCompressedTokenBalance } from "@/hooks/useCompressedTokenBalance";
 import { RotateCcw } from "lucide-react";
-import { formatAddress } from "@/utils/solana";
 
 const CompressedTokens = () => {
   const { publicKey: connectedWallet } = useWallet();
