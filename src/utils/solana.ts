@@ -7,13 +7,18 @@ import {
   createCloseAccountInstruction,
 } from "@solana/spl-token";
 import { getLightRpc } from "@/utils/zkCompression";
-import { getRpcUrl } from "@/utils/environment";
+import { getRpcUrl, getEnvironment } from "@/utils/environment";
+
+const currentEnv = getEnvironment();
 
 export const formatAddress = (address = "") => {
   return `${address.slice(0, 4)}...${address.slice(-4)}`;
 };
 
-export const formatAmount = (amount: number = 0, decimals: number = 9): string => {
+export const formatAmount = (
+  amount: number = 0,
+  decimals: number = 9
+): string => {
   // Calculate the formatted value by dividing the amount by 10^decimals
   const value = amount / 10 ** decimals;
 
@@ -32,11 +37,15 @@ export const formatAmount = (amount: number = 0, decimals: number = 9): string =
 };
 
 export const getAddressExplorerUrl = (address = "") => {
-  return `https://explorer.solana.com/address/${address}?cluster=devnet`;
+  return currentEnv === "mainnet"
+    ? `https://explorer.solana.com/address/${address}`
+    : `https://explorer.solana.com/address/${address}?cluster=devnet`;
 };
 
 export const getSignatureExplorerUrl = (signature = "") => {
-  return `https://explorer.solana.com/tx/${signature}?cluster=devnet`;
+  return currentEnv === "mainnet"
+    ? `https://explorer.solana.com/tx/${signature}`
+    : `https://explorer.solana.com/tx/${signature}?cluster=devnet`;
 };
 
 export const openExplorerUrl = (address = "", isTxn = false) => {
