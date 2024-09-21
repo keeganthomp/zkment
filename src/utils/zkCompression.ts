@@ -65,7 +65,7 @@ export const getTxnForSigning = (
   txnInstructions: TransactionInstruction | TransactionInstruction[],
   signer: PublicKey,
   blockhash: string,
-  additionalSigners?: Signer[],
+  additionalSigners?: Signer[]
   // lookupTableAccounts?: AddressLookupTableAccount[]
 ): VersionedTransaction => {
   const computeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
@@ -136,8 +136,10 @@ export const getCompressedMintProgam = (connectedWallet: PublicKey) => {
 };
 
 export const getCompressedMintInfo = async ({
+  // owner,
   mint,
 }: {
+  // owner: PublicKey;
   mint: PublicKey;
 }): Promise<CompressedTokenDetails> => {
   const lightRpc = getLightRpc();
@@ -158,7 +160,6 @@ export const getCompressedMintInfo = async ({
   });
   const compressedAccountResponseData = await compressedAccountResponse.json();
   const compressedAccountInfo = compressedAccountResponseData?.result?.value;
-  console.log("compressedAccountInfo", compressedAccountInfo);
   // fetch mint info from solana
   const mintInfo = await getMint(lightRpc, mint);
   const formattedCompressedAccountInfo: CompressedTokenDetails = {
@@ -233,4 +234,11 @@ export const fetCompressedTokenBalances = async (wallet: PublicKey) => {
   });
 
   return compressedTokens;
+};
+
+export const fetchCompressedSignatures = async (wallet: PublicKey) => {
+  const lightRpc = getLightRpc();
+  const compressedSignatures =
+    await lightRpc.getCompressionSignaturesForOwner(wallet);
+  console.log("compressedSignatures", compressedSignatures);
 };

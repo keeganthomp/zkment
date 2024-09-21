@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { PublicKey } from "@solana/web3.js";
-import { getTransactions } from "../utils/solana";
+import { getTransactions } from "@/utils/solana";
 
 interface UseTransactionsResult {
   transactions: any[];
