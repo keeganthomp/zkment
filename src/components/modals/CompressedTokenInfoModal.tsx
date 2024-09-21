@@ -51,6 +51,12 @@ const CompressedMintInfoModal = ({ open, onClose, token }: Props) => {
             </DialogHeader>
             <div className="pt-3">
               <div className="text-sm text-gray-500 flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                  <p className="text-gray-700">Decimals:</p>
+                  <p>
+                    {mintInfo?.decimals}
+                  </p>
+                </div>
                 <div className="flex items-center gap-2">
                   <p className="text-gray-700">Authority:</p>
                   <p>
@@ -62,7 +68,7 @@ const CompressedMintInfoModal = ({ open, onClose, token }: Props) => {
                 <div className="flex items-center gap-2">
                   <p className="text-gray-700">Balance:</p>
                   <p>
-                    {formatAmount(token?.balance, mintInfo?.token?.decimals)}
+                    {formatAmount(token?.balance, mintInfo?.decimals)}
                   </p>
                 </div>
               </div>
