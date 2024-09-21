@@ -33,7 +33,9 @@ const Reclaim = () => {
     return (
       <div className="flex flex-col gap-1 justify-center items-center">
         <Loader className="w-5 h-5" />
-        <p className="text-gray-500 font-thin">fetching SPL tokens...</p>
+        <p className="text-gray-500 font-thin">
+          fetching SPL token accounts...
+        </p>
       </div>
     );
   }
@@ -57,6 +59,10 @@ const Reclaim = () => {
           {errorFetchingSplTokenAccounts ? (
             <p className="text-red-500 font-light text-sm text-center">
               {errorFetchingSplTokenAccounts}
+            </p>
+          ) : splTokenAccounts.length === 0 ? (
+            <p className="text-gray-500 font-thin text-center">
+              No SPL token accounts to reclaim rent from
             </p>
           ) : (
             <>

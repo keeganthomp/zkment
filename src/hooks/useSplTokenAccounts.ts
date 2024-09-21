@@ -1,52 +1,81 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import {} from "@/context/zkCompressionContext";
+import { TokenAccount } from "@/utils/solana";
 import { useTokens } from "@/context/tokensContexts";
-import { fetchSplTokenAccounts, TokenAccount } from "@/utils/solana";
+import { fetchSplTokenAccounts } from "@/utils/solana";
 
-type useSplTokenAccounts = {
+type UseSplTokenAccountsHook = {
   splTokenAccounts: TokenAccount[];
   isFetching: boolean;
   error: string | null;
   refetch: () => void;
 };
 
-export const useSplTokenAccounts = (): useSplTokenAccounts => {
+export const useSplTokenAccounts = (): UseSplTokenAccountsHook => {
   const { publicKey: connectedWallet } = useWallet();
   const { splTokenAccounts, setSplTokenAccounts } = useTokens();
   const hasFetchedRef = useRef(false);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchCompressedTokens = useCallback(async () => {
-    if (!connectedWallet) {
-      setError("Wallet not connected");
-      return;
-    }
-    setIsFetching(true);
-    setError(null);
-    try {
-      const compressedTokens = await fetchSplTokenAccounts(connectedWallet);
-      setSplTokenAccounts(compressedTokens);
-      hasFetchedRef.current = true;
-    } catch (err: any) {
-      console.error("Error spl tokens:", err);
-      setError(err?.message || "Unknown error");
-    } finally {
-      setIsFetching(false);
-    }
-  }, [connectedWallet]);
+  const fetchSplAccounts = useCallback(
+    async (showLoading = true) => {
+      if (!connectedWallet) {
+        setError("Wallet not connected");
+        return;
+      }
+      setIsFetching(showLoading);
+      setError(null);
+      try {
+        const accounts = await fetchSplTokenAccounts(connectedWallet);
+        setSplTokenAccounts(accounts);
+        hasFetchedRef.current = true;
+      } catch (err: any) {
+        console.error("Error fetching SPL tokens:", err);
+        setError(err?.message || "Unknown error");
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [connectedWallet, setSplTokenAccounts]
+  );
 
   useEffect(() => {
-    if (connectedWallet && !hasFetchedRef.current) {
-      fetchCompressedTokens();
+    // Function to start polling
+    const startPolling = () => {
+      // Clear any existing interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      // Set up a new interval to fetch every 2.5 seconds
+      intervalRef.current = setInterval(() => {
+        fetchSplAccounts(false);
+      }, 2500);
+    };
+
+    if (connectedWallet) {
+      if (!hasFetchedRef.current) {
+        fetchSplAccounts().then(() => {
+          startPolling();
+        });
+      } else {
+        startPolling();
+      }
     }
-  }, [connectedWallet, fetchCompressedTokens]);
+
+    // Cleanup function to clear the interval when component unmounts or wallet changes
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [connectedWallet, fetchSplAccounts]);
 
   return {
     splTokenAccounts,
     isFetching,
     error,
-    refetch: fetchCompressedTokens,
+    refetch: fetchSplAccounts,
   };
 };

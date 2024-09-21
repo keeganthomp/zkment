@@ -201,20 +201,36 @@ export const fetCompressedTokenBalances = async (wallet: PublicKey) => {
       },
     }),
   });
+
   if (response.status === 429) {
     throw new Error("Too many requests. Try again in a few seconds.");
   }
+
   if (!response.ok) {
     throw new Error("Failed to fetch compressed token balances");
   }
+
   const data = await response.json();
   const compressedTokenBalances = data?.result?.value?.token_balances;
-  const compressedTokens = compressedTokenBalances?.map((token: any) => ({
+
+  if (!compressedTokenBalances) {
+    return [];
+  }
+
+  const compressedTokens = compressedTokenBalances.map((token: any) => ({
     mint: token.mint,
-    balance: token.balance,
+    balance: Number(token.balance), // Ensure balance is a number for accurate sorting
     compressed: true,
   }));
-  // sort by balance
-  compressedTokens?.sort((a: any, b: any) => b.balance - a.balance);
+
+  // Sort by balance descending, then by mint address ascending
+  compressedTokens.sort((a: any, b: any) => {
+    if (b.balance !== a.balance) {
+      return b.balance - a.balance; // Primary sort: balance descending
+    }
+    // Secondary sort: mint address ascending
+    return a.mint.localeCompare(b.mint);
+  });
+
   return compressedTokens;
 };

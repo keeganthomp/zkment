@@ -13,8 +13,22 @@ export const formatAddress = (address = "") => {
   return `${address.slice(0, 4)}...${address.slice(-4)}`;
 };
 
-export const formatAmount = (amount = 0, decimals = 9) => {
-  return amount / 10 ** decimals;
+export const formatAmount = (amount: number = 0, decimals: number = 9): string => {
+  // Calculate the formatted value by dividing the amount by 10^decimals
+  const value = amount / 10 ** decimals;
+
+  // Define a threshold below which the number will be displayed in exponential notation
+  const EXPONENTIAL_THRESHOLD = 1e-6;
+
+  // Check if the absolute value is below the threshold and not zero
+  if (Math.abs(value) < EXPONENTIAL_THRESHOLD && value !== 0) {
+    // Convert to exponential notation with up to 6 decimal places
+    return value.toExponential(6);
+  } else {
+    // Convert to fixed-point notation with specified decimals
+    // Then remove any trailing zeros and the decimal point if not needed
+    return parseFloat(value.toFixed(decimals)).toString();
+  }
 };
 
 export const getAddressExplorerUrl = (address = "") => {
