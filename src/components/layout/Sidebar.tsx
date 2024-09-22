@@ -61,7 +61,7 @@ const Sidebar = () => {
   return (
     <div className="w-46 flex-shrink-0 shadow-md bg-white min-w-[175px] flex flex-col gap-6 pb-5 py-5 relative">
       <div className="flex flex-col gap-0 justify-center items-center relative">
-        <h1 className="text-2xl tracking-[1px] uppercase font-bold">
+        <h1 className="text-2xl tracking-[1px] uppercase font-bold text-gray-700">
           ZKMent
         </h1>
         <p className="text-[9px] uppercase font-thin tracking-[2px] relative top-[-4px]">
