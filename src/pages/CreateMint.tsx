@@ -109,7 +109,7 @@ const CreateMint = ({ onSubmit }: Props) => {
             </div>
           ) : (
             <Button
-              className="w-full"
+              className="w-full bg-gray-700 hover:bg-gray-600"
               disabled={!canSend}
               onClick={handleCreateMint}
             >

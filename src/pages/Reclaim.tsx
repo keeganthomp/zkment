@@ -45,7 +45,7 @@ const Reclaim = () => {
       <div>
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-semibold text-gray-700 pb-7">
-            Reclaim Rent
+            Compress & Reclaim
           </h1>
           <button
             disabled={isFetchingSplTokenAccounts}
@@ -61,7 +61,7 @@ const Reclaim = () => {
               {errorFetchingSplTokenAccounts}
             </p>
           ) : splTokenAccounts.length === 0 ? (
-            <p className="text-gray-500 font-thin text-center">
+            <p className="text-gray-500 font-thin">
               No SPL token accounts to reclaim rent from
             </p>
           ) : (

@@ -70,8 +70,8 @@ const Sidebar = () => {
       </div>
       <ConnectWalletButton />
       <nav className="flex flex-col gap-1 px-2">
-        <Link to="/" label="Balances" />
-        <Link to="/reclaim" label="Reclaim" />
+        <Link to="/" label="Tokens" />
+        <Link to="/reclaim" label="Compress" />
         <Link to="/create-mint" label="Create Mint" />
         <Link to="/tx" label="Transactions" />
       </nav>

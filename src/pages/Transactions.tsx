@@ -4,11 +4,28 @@ import { Loader } from "@/components/ui/loader";
 import moment from "moment";
 import { useTransactions } from "@/hooks/useTransactions";
 import { RotateCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Transactions = () => {
   const { publicKey } = useWallet();
+  const [search, setSearch] = useState("");
   const { transactions, isLoading, error, refetch } =
     useTransactions(publicKey);
+  const [filteredTransactions, setFilteredTransactions] =
+    useState(transactions);
+
+  useEffect(() => {
+    if (search) {
+      const filtered = transactions?.filter((txn) =>
+        txn.signature.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredTransactions(filtered);
+    } else {
+      setFilteredTransactions(transactions);
+    }
+  }, [search, transactions]);
+
+  const transactionsToRender = search ? filteredTransactions : transactions;
 
   if (!publicKey) {
     return (
@@ -37,8 +54,8 @@ const Transactions = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-semibold text-gray-700 pb-7">
+      <div className="flex justify-between items-center pb-5">
+        <h1 className="text-4xl font-semibold text-gray-700">
           Transactions
         </h1>
         <button
@@ -54,11 +71,19 @@ const Transactions = () => {
           <p className="text-red-500 font-light text-sm text-center">{error}</p>
         ) : (
           <>
-            <div className="grid grid-cols-[120px_1fr] gap-4 h-8 px-2 text-gray-700 underline">
+            <div className="pb-2">
+              <input
+                onChange={(e) => setSearch(e.target.value)}
+                type="text"
+                placeholder="Search for a signature"
+                className="w-full p-2 rounded-md bg-gray-100 focus:outline-black text-gray-600 font-light"
+              />
+            </div>
+            <div className="grid grid-cols-[120px_1fr] gap-4 h-8 px-2 text-gray-700 font-semibold items-center">
               <h3>Time</h3>
               <h3>Signature</h3>
             </div>
-            {transactions.map((txn) => (
+            {transactionsToRender.map((txn) => (
               <div
                 onClick={() => openExplorerUrl(txn.signature, true)}
                 className="grid grid-cols-[120px_1fr] gap-4 cursor-pointer hover:bg-gray-50 transition-colors h-12 px-2 text-gray-500 font-light rounded"

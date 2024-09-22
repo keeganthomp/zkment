@@ -187,7 +187,7 @@ export const getCompressedMintInfo = async ({
   return formattedCompressedAccountInfo;
 };
 
-export const fetCompressedTokenBalances = async (wallet: PublicKey) => {
+export const fetCompressedTokenBalances = async (wallet: PublicKey, mint?: string) => {
   const response = await fetch(getRpcUrl(), {
     method: "POST",
     headers: {
@@ -199,6 +199,7 @@ export const fetCompressedTokenBalances = async (wallet: PublicKey) => {
       method: "getCompressedTokenBalancesByOwner",
       params: {
         owner: wallet.toBase58(),
+        mint: mint || null
       },
     }),
   });

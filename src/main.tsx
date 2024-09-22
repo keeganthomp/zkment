@@ -11,6 +11,7 @@ import { TokenContextProvider } from "./context/tokensContexts";
 import Sidebar from "./components/layout/Sidebar";
 
 import TokenBalances from "./pages/CompressedTokens";
+import CompressedMintDetail from "./pages/CompressedMintDetail";
 import CreateMint from "./pages/CreateMint";
 import Transactions from "./pages/Transactions";
 import Reclaim from "./pages/Reclaim";
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "/tx",
         element: <Transactions />,
+      },
+      {
+        path: "/mint/:mint",
+        element: <CompressedMintDetail />,
       },
     ],
   },
